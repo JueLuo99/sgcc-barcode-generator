@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="JsBarcode.code128.min.js"></script>
+    <script>
+        function valid_number(value) {
+            // Accept only digits, dashes or spaces
+            if (/[^0-9-\s]+/.test(value)) return false;
+
+            // The Luhn Algorithm. It's so pretty.
+            let nCheck = 0, bEven = false;
+            value = value.replace(/\D/g, "");
+
+            for (var n = value.length - 1; n >= 0; n--) {
+                var cDigit = value.charAt(n),
+                    nDigit = parseInt(cDigit, 10);
+
+                if (bEven && (nDigit *= 2) > 9) nDigit -= 9;
+
+                nCheck += nDigit;
+                bEven = !bEven;
+            }
+
+            return (nCheck % 10);
+        }
+
+        function generate(data) {
+            document.getElementById("number").innerHTML = "No." + data
+            // data += valid_number(data)
+            // alert(data)
+            JsBarcode("#barcode", data, {format: "CODE128C"});
+        }
+    </script>
+</head>
+<body>
+
+<div style="margin:10px">
+    <input id="data" value="3230001000015438364973"><br/>
+    <input type="button" onclick='generate(document.getElementById("data").value)' value="生成">
+
+</div>
+
+<p id="number"></p>
+
+<svg id="barcode"></svg>
+
+
+</body>
+</html>
